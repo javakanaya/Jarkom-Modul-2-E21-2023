@@ -8,6 +8,7 @@ Laporan Resmi Praktikum Jaringan Komputer Modul 2
 - [Java Kanaya Prada](https://github.com/javakanaya) - 5025211112
 
 ## Topologi
+<img width="1057" alt="Topologi" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/c7b68ddc-95c8-4208-aa75-1edc92eae57f">
 
 ## Network Configuration
 - Router
@@ -101,8 +102,7 @@ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 10.47.0.0/16
 
 Untuk menghubungkan semua node pada jaringan internet, kita perlu menjalankan perintah berikut pada masing-masing node. 
 ```sh
-echo '
-nameserver 192.168.122.1    # IP DNS' > /etc/resolv.conf
+echo 'nameserver 192.168.122.1    # IP DNS' > /etc/resolv.conf
 ```
 IP tersebut didapatkan dari file ```/etc/resolv.conf``` yang ada di node Router.
 
@@ -118,7 +118,55 @@ ping google.com -c 5
 ## Soal 2
 > Buatlah website utama pada node arjuna dengan akses ke **arjuna.yyy.com** dengan alias **www.arjuna.yyy.com** dengan yyy merupakan kode kelompok.
 ### *Script*
+Pada **YudhistiraDNSMaster** Pastikan pada file ```/etc/resolv.conf/``` sudah terdapat nameserver seperti pada soal 1. Kemudian jalankan script berikut. 
+```sh
+# update 
+apt-get update
+apt-get install bind9 -y
+
+# konfigurasi etc/bind/named.conf.local
+echo 'zone "arjuna.e21.com" {
+    type master;
+    notify yes;
+    file "/etc/bind/arjuna/arjuna.e21.com";
+};' > /etc/bind/named.conf.local
+
+mkdir /etc/bind/arjuna
+
+# konfigurasi domain arjuna.e21.com
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL  604800
+@       IN    SOA       arjuna.e21.com. root.arjuna.e21.com. (
+                        2023101001      ; Serial
+                            604800      ; Refresh
+                             86400      ; Retry
+                           2419200      ; Expire
+                            604800 )    ; Negative Cache TTL
+
+;
+@           IN  NS      arjuna.e21.com.
+@           IN  A       10.47.2.2   ; IP Arjuna
+www         IN  CNAME   arjuna.e21.com.' > /etc/bind/arjuna/arjuna.e21.com
+
+```
+Kemudian untuk melakukan pengujian, jalankan script berikut, agar node client terhubung ke **YudhistiraDNSMaster**
+```sh
+echo '
+nameserver 10.47.2.4        # IP Yudhistira 
+nameserver 192.168.122.1    # IP Router' > /etc/resolv.conf
+```
 ### Hasil
+
+Untuk melakukan pengujian, jalankan perintah berikut pada node client, yaitu **NakulaClient** atau **SadewaClient**
+```
+ping arjuna.e21.com -c 5
+ping www.arjuna.e21.com -c 5
+```
+<img width="1580" alt="Screenshot 2023-10-14 at 11 36 53" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/4f775e24-514d-4462-a2fa-cf4d7c7137e8">
+
+<img width="1580" alt="Screenshot 2023-10-14 at 11 39 42" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/9f1c6a67-eb06-4ecd-af60-19bf4f6acdf3">
 
 ## Soal 3
 > Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke **abimanyu.yyy.com** dan alias **www.abimanyu.yyy.com**.

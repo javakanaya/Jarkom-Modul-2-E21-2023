@@ -308,6 +308,8 @@ Lalu untuk melakukan pengujian pada node client, jalankan perintah berikut. (```
 ```
 host -t PTR 10.47.1.4
 ```
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/b556bf50-9091-4788-8703-728857941ca8">
+
 
 ## Soal 6
 > Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
@@ -384,6 +386,7 @@ Lalu untuk melakukan pengujian pada node client, panggil domain yang telah dibua
 ping abimanyu.e21.com -c 5
 ping arjuna.e21.com -c 5
 ```
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/fab521ce-116e-4518-a5c6-c35fc66975bc">
 
 
 ## Soal 7
@@ -492,6 +495,7 @@ Lalu untuk pengujiannya, jalankan perintah berikut pada node client, yaitu **Nak
 ping baratayuda.abimanyu.e21.com -c 5
 ping www.baratayuda.abimanyu.e21.com -c 5
 ```
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/234050ad-59a0-4fb6-bee7-1ab37d4a835c">
 
 
 ## Soal 8
@@ -525,6 +529,8 @@ Lalu untuk pengujiannya, jalankan perintah berikut pada node client, yaitu **Nak
 ping rjp.baratayuda.abimanyu.e21.com -c 5
 ping www.rjp.baratayuda.abimanyu.e21.com -c 5
 ```
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/606e5b55-9506-4827-b034-5e5ecfdf8b16">
+
 
 ## Soal 9
 > Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai webserver) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
@@ -644,6 +650,11 @@ lynx 10.47.1.4
 lynx 10.47.1.6
 lynx arjuna.e21.com
 ```
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/d9f238ce-c621-48db-ac5f-fbb70b34f989">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/121f1015-959e-49bd-bbf0-d6dc2d885738">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/4132e13e-01eb-41c1-985d-232603d20a16">
+
+
 
 ## Soal 10
 > Kemudian gunakan algoritma **Round Robin** untuk Load Balancer pada **Arjuna**. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. 
@@ -718,11 +729,14 @@ service php7.2-fpm start
 ### Hasil
 Lalu untuk pengujiannya, buka **arjuna.e21.com** dengan perintah berikut pada node client, yaitu **NakulaClient** atau **SadewaClient**:
 ```
-lynx 10.47.1.5:8001
-lynx 10.47.1.4:8002
-lynx 10.47.1.6:8003
 lynx arjuna.e21.com
 ```
+
+ketika berulang-kali mengakses arjuna.e21.com, akan berjalan di web server yang berbeda-beda.
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/58b01b96-ceca-45bb-893f-551c7ce3f2f1">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/d1b57999-a3f9-41cb-b4b3-e0015c55b6ec">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/d1c8d8fb-e2d1-4eea-a14b-6aa8aa0f3042">
+
 
 ## Soal 11
 > Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server **www.abimanyu.yyy.com**. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy

@@ -149,6 +149,8 @@ $TTL  604800
 @           IN  NS      arjuna.e21.com.
 @           IN  A       10.47.2.2   ; IP Arjuna
 www         IN  CNAME   arjuna.e21.com.' > /etc/bind/arjuna/arjuna.e21.com
+
+service bind9 restart
 ```
 
 Kemudian untuk melakukan pengujian, jalankan script berikut pada node client, agar node client terhubung ke **YudhistiraDNSMaster**
@@ -207,6 +209,8 @@ $TTL  604800
 @               IN  A       10.47.1.4                   ; IP Abimanyu
 www             IN  CNAME   abimanyu.e21.com.
 @               IN  AAAA    ::1' > /etc/bind/abimanyu/abimanyu.e21.com
+
+service bind9 restart
 ```
 ### Hasil
 Lalu untuk pengujiannya, sama seperti sebelumnya, jalankan perintah berikut pada node client, yaitu **NakulaClient** atau **SadewaClient**
@@ -219,7 +223,40 @@ ping www.abimanyu.e21.com -c 5
 ## Soal 4
 > Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain **parikesit.abimanyu.yyy.com** yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
 ### *Script*
+Berikutnya untuk menambahkan subdomain **parikesit.abimanyu.e21.com**, maka dilakukan konfigurasi pada file ```/etc/bind/abimanyu/abimanyu.e21.com``` sebagai berikut:
+```sh
+# konfigurasi domain abimanyu.e21.com
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL  604800
+@       IN    SOA       abimanyu.e21.com. root.abimanyu.e21.com. (
+                        2023101001      ; Serial
+                            604800      ; Refresh
+                             86400      ; Retry
+                           2419200      ; Expire
+                            604800 )    ; Negative Cache TTL
+
+;
+@               IN  NS      abimanyu.e21.com.
+@               IN  A       10.47.1.4                   ; IP Abimanyu
+www             IN  CNAME   abimanyu.e21.com.
+parikesit       IN  A       10.47.1.4                   ; IP Abimanyu
+www.parikesit   IN  CNAME   parikesit.abimanyu.e21.com.
+@               IN  AAAA    ::1' > /etc/bind/abimanyu/abimanyu.e21.com
+
+service bind9 restart
+```
 ### Hasil
+Lalu untuk pengujiannya, jalankan perintah berikut pada node client, yaitu **NakulaClient** atau **SadewaClient**
+```
+ping parikesit.abimanyu.e21.com -c 5
+ping www.parikesit.abimanyu.e21.com -c 5
+```
+
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/cb59cb1e-a2f0-4f41-86cb-8cb66e0734c9">
+
+Terlihat bahwa IP-nya juga mengarah ke IP Abimanyu, yaitu ```10.47.1.4```
 
 ## Soal 5
 > Buat juga reverse domain untuk domain utama. (Abimanyu saja yang direverse)

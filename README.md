@@ -173,7 +173,7 @@ ping www.arjuna.e21.com -c 5
 ## Soal 3
 > Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke **abimanyu.yyy.com** dan alias **www.abimanyu.yyy.com**.
 ### *Script*
-Melanjutkan pada soal nomor 2, maka kita perlu menambahkan konfigurasi untuk domain **abimanyu.e21.com** dengan script sebagai berikut.
+Melanjutkan pada soal nomor 2, maka kita perlu menambahkan konfigurasi untuk domain **abimanyu.e21.com** pada **YudhistiraDNSMaster** dengan script sebagai berikut:
 
 ```sh
 # konfigurasi etc/bind/named.conf.local
@@ -223,7 +223,7 @@ ping www.abimanyu.e21.com -c 5
 ## Soal 4
 > Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain **parikesit.abimanyu.yyy.com** yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
 ### *Script*
-Berikutnya untuk menambahkan subdomain **parikesit.abimanyu.e21.com**, maka dilakukan konfigurasi pada file ```/etc/bind/abimanyu/abimanyu.e21.com``` sebagai berikut:
+Berikutnya untuk menambahkan subdomain **parikesit.abimanyu.e21.com**, maka dilakukan konfigurasi pada file ```/etc/bind/abimanyu/abimanyu.e21.com``` pada **YudhistiraDNSMaster** sebagai berikut:
 ```sh
 # konfigurasi domain abimanyu.e21.com
 echo ';
@@ -261,27 +261,389 @@ Terlihat bahwa IP-nya juga mengarah ke IP Abimanyu, yaitu ```10.47.1.4```
 ## Soal 5
 > Buat juga reverse domain untuk domain utama. (Abimanyu saja yang direverse)
 ### *Script*
+Untuk membuat reverse domain **abimanyu.e21.com**, gunakan script berikut pada **YudhistiraDNSMaster**:
+```sh
+# konfigurasi etc/bind/named.conf.local
+echo 'zone "arjuna.e21.com" {
+    type master;
+    notify yes;
+    file "/etc/bind/arjuna/arjuna.e21.com";
+};
+
+zone "abimanyu.e21.com" {
+    type master;
+    notify yes;
+    file "/etc/bind/abimanyu/abimanyu.e21.com";
+};
+
+zone "1.47.10.in-addr.arpa" {
+    type master;
+    notify yes;
+    file "/etc/bind/abimanyu/1.47.10.in-addr.arpa";
+};' > /etc/bind/named.conf.local
+
+# konfigurasi reverse domain 1.47.10.in-addr.arpa.
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL  604800
+@       IN    SOA       abimanyu.e21.com. root.abimanyu.e21.com. (
+                        2023101001      ; Serial
+                            604800      ; Refresh
+                             86400      ; Retry
+                           2419200      ; Expire
+                            604800 )    ; Negative Cache TTL
+;
+1.47.10.in-addr.arpa.   IN  NS  abimanyu.e21.com.
+4                       IN  PTR abimanyu.e21.com.' > /etc/bind/abimanyu/1.47.10.in-addr.arpa
+
+service bind9 restart
+```
+Untuk melakukan pengujian install dnsutils pada node client
+```sh
+apt-get dnsutils
+```
 ### Hasil
+Lalu untuk melakukan pengujian pada node client, jalankan perintah berikut. (```10.47.1.4``` merupakan IP abimanyu)
+```
+host -t PTR 10.47.1.4
+```
 
 ## Soal 6
 > Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
 ### *Script*
+Untuk membuat DNS Slave, maka ditambahkan ```also-notify``` dan ```allow-transfer```, pada konfigurasi setiap domain di file ```/etc/bind/named.conf.local```. Gunakan script berikut pada **YudhistiraDNSMaster**:
+```sh
+# konfigurasi etc/bind/named.conf.local
+echo 'zone "arjuna.e21.com" {
+    type master;
+    notify yes;
+    also-notify { 10.47.2.3; };     // IP Werkudara
+    allow-transfer { 10.47.2.3; };  // IP Werkudara
+    file "/etc/bind/arjuna/arjuna.e21.com";
+};
+
+zone "abimanyu.e21.com" {
+    type master;
+    notify yes;
+    also-notify { 10.47.2.3; };     // IP Werkudara
+    allow-transfer { 10.47.2.3; };  // IP Werkudara
+    file "/etc/bind/abimanyu/abimanyu.e21.com";
+};
+
+zone "1.47.10.in-addr.arpa" {
+    type master;
+    notify yes;
+    also-notify { 10.47.2.3; };     // IP Werkudara
+    allow-transfer { 10.47.2.3; };  // IP Werkudara
+    file "/etc/bind/abimanyu/1.47.10.in-addr.arpa";
+};' > /etc/bind/named.conf.local
+
+service bind9 restart
+```
+Kemudian pada **WerkudaraDNSSlave** jalankan script berikut:
+```sh
+echo '
+nameserver 10.47.2.4        # IP Yudhistira 
+nameserver 10.47.2.3        # IP Werkudara
+nameserver 192.168.122.1    # IP Router' > /etc/resolv.conf
+
+# update 
+apt-get update
+apt-get install bind9 -y
+
+echo 'zone "arjuna.e21.com" {
+    type slave;
+    masters { 10.47.2.4; }; // IP Yudhistira
+    file "/var/lib/bind/arjuna.e21.com";
+};
+
+zone "abimanyu.e21.com" {
+    type slave;
+    masters { 10.47.2.4; }; // IP Yudhistira
+    file "/var/lib/bind/abimanyu.e21.com";
+};
+
+zone "1.47.10.in-addr.arpa" {
+    type slave;
+    masters { 10.47.2.4; }; // IP Yudhistira
+    file "/etc/bind/1.47.10.in-addr.arpa";
+};
+' > /etc/bind/named.conf.local
+
+service bind9 restart
+```
+
+Untuk melakukan pengujian hentikan service bind9 pada **YudhistiraDNSMaster**
+```sh
+service bind9 stop
+```
 ### Hasil
+Lalu untuk melakukan pengujian pada node client, panggil domain yang telah dibuat, dan seharusnya akan tetap terhubung, walaupun *service bind9* pada **YudhistiraDNSMaster** sudah dimatikan.
+```
+ping abimanyu.e21.com -c 5
+ping arjuna.e21.com -c 5
+```
+
 
 ## Soal 7
 > Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu **baratayuda.abimanyu.yyy.com** dengan alias **www.baratayuda.abimanyu.yyy.com** yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda.
 ### *Script*
+Untuk membuat delegasi subdomain, kita perlu menambahkan:
+```
+baratayuda      IN      NS      ns1.abimanyu.e21.com.
+ns1             IN      A       10.47.2.3     ; IP Werkudara 
+```
+pada file ```/etc/bind/abimanyu/abimanyu.e21.com``` agar mendapatkan authoritative terhadap Werkudara. Kita juga perlu mengaktifkan ```allow-query { any; };``` pada file ```/etc/bind/named.conf.options```. Untuk melakukannya jalankan script berikut pada **YudhistiraDNSMaster**:
+```sh
+# konfigurasi domain abimanyu.e21.com
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL  604800
+@       IN    SOA       abimanyu.e21.com. root.abimanyu.e21.com. (
+                        2023101001      ; Serial
+                            604800      ; Refresh
+                             86400      ; Retry
+                           2419200      ; Expire
+                            604800 )    ; Negative Cache TTL
+
+;
+@               IN  NS      abimanyu.e21.com.
+@               IN  A       10.47.1.4                   ; IP Abimanyu
+www             IN  CNAME   abimanyu.e21.com.
+parikesit       IN  A       10.47.1.4                   ; IP Abimanyu
+www.parikesit   IN  CNAME   parikesit.abimanyu.e21.com.
+baratayuda      IN  NS      ns1.abimanyu.e21.com.
+ns1             IN  A       10.47.2.3                   ; IP Werkudara
+@               IN  AAAA    ::1' > /etc/bind/abimanyu/abimanyu.e21.com
+
+# konfigurasi etc/bind/named.conf.options
+echo 'options {
+    directory "/var/cache/bind";
+
+    allow-query { any; };
+
+    auth-nxdomain no;   # conform to RFC1035
+    listen-on-v6 {any; };
+};' > /etc/bind/named.conf.options
+
+service bind9 restart
+```
+Lalu pada **WerkudaraDNSSlave** jalankan script berikut:
+```sh
+mkdir /etc/bind/baratayuda
+
+echo 'zone "arjuna.e21.com" {
+    type slave;
+    masters { 10.47.2.4; }; // IP Yudhistira
+    file "/var/lib/bind/arjuna.e21.com";
+};
+
+zone "abimanyu.e21.com" {
+    type slave;
+    masters { 10.47.2.4; }; // IP Yudhistira
+    file "/var/lib/bind/abimanyu.e21.com";
+};
+
+zone "1.47.10.in-addr.arpa" {
+    type slave;
+    masters { 10.47.2.4; }; // IP Yudhistira
+    file "/etc/bind/1.47.10.in-addr.arpa";
+};
+
+zone "baratayuda.abimanyu.e21.com" {
+    type master;
+    file "/etc/bind/baratayuda/baratayuda.abimanyu.e21.com";
+};
+' > /etc/bind/named.conf.local
+
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     baratayuda.abimanyu.e21.com. root.baratayuda.abimanyu.e21.com. (
+                     2023101001         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@                       IN      NS      baratayuda.abimanyu.e21.com.
+@                       IN      A       10.47.1.4                       ; IP Abimanyu
+www                     IN      CNAME   baratayuda.abimanyu.e21.com.
+' > /etc/bind/baratayuda/baratayuda.abimanyu.e21.com
+
+echo 'options {
+    directory "/var/cache/bind";
+
+    allow-query{any;};
+
+    auth-nxdomain no;   # conform to RFC1035
+    listen-on-v6 { any; };
+};
+' > /etc/bind/named.conf.options
+
+service bind9 restart
+```
 ### Hasil
+Lalu untuk pengujiannya, jalankan perintah berikut pada node client, yaitu **NakulaClient** atau **SadewaClient**
+```
+ping baratayuda.abimanyu.e21.com -c 5
+ping www.baratayuda.abimanyu.e21.com -c 5
+```
+
 
 ## Soal 8
 > Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses **rjp.baratayuda.abimanyu.yyy.com** dengan alias **www.rjp.baratayuda.abimanyu.yyy.com** yang mengarah ke Abimanyu.
 ### *Script*
+Untuk membuat subdomain, jalankan script berikut pada **WerkudaraDNSSlave**(karena subdomain tersebut telah didelegasikan ke node tersebut):
+```sh
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     baratayuda.abimanyu.e21.com. root.baratayuda.abimanyu.e21.com. (
+                     2023101001         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@                       IN      NS      baratayuda.abimanyu.e21.com.
+@                       IN      A       10.47.1.4                       ; IP Abimanyu
+www                     IN      CNAME   baratayuda.abimanyu.e21.com.
+rjp                     IN      A       10.47.1.4                       ; IP Abimanyu
+www.rjp                 IN      CNAME   rjp.baratayuda.abimanyu.e21.com.
+' > /etc/bind/baratayuda/baratayuda.abimanyu.e21.com
+
+service bind9 restart
+```
 ### Hasil
+Lalu untuk pengujiannya, jalankan perintah berikut pada node client, yaitu **NakulaClient** atau **SadewaClient**
+```
+ping rjp.baratayuda.abimanyu.e21.com -c 5
+ping www.rjp.baratayuda.abimanyu.e21.com -c 5
+```
 
 ## Soal 9
 > Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai webserver) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
 ### *Script*
+Jalankan Script berikut pada **ArjunaLoadBalancer**:s
+```sh
+# Menghubungkan nameserver
+echo '
+nameserver 10.47.2.4        # IP Yudhistira 
+nameserver 10.47.2.3        # IP Werkudara
+nameserver 192.168.122.1    # IP Router' > /etc/resolv.conf
+
+# Update,dan instalasi
+apt-get update
+apt-get install dnsutils lynx -y
+apt-get install nginx bind9 -y
+
+rm /etc/nginx/sites-enabled/default
+
+# Nginx sites-available config untuk worker loadbalancer
+echo ' # Default menggunakan Round Robin
+ upstream myweb  {
+    server 10.47.1.5; #IP Prabukusuma
+ 	server 10.47.1.4; #IP Abimanyu
+    server 10.47.1.6s; #IP Wisanggeni
+ }
+
+ server {
+ 	listen 80;
+ 	server_name arjuna.e21.com www.arjuna.e21.com;
+
+ 	location / {
+ 	proxy_pass http://myweb;
+ 	}
+ }' > /etc/nginx/sites-available/praktikum23-loadbalancer
+
+ln -s /etc/nginx/sites-available/praktikum23-loadbalancer /etc/nginx/sites-enabled/praktikum23-loadbalancer
+
+service nginx restart
+```
+
+Lalu pada setiap worker (**AbimanyuWerbServer**, **PrabukusumaWebServer**, **WisanggerniWebServer**) jalankan script berikut:
+```sh
+echo '
+nameserver 10.47.2.4        # IP Yudhistira 
+nameserver 10.47.2.3        # IP Werkudara
+nameserver 192.168.122.1    # IP Router' > /etc/resolv.conf
+
+apt-get update
+apt-get install dnsutils lynx -y
+apt-get install nginx php php-fpm -y
+
+mkdir /var/www/praktikum23
+rm /etc/nginx/sites-enabled/default
+
+# index.php pada worker server prabukusuma
+echo "<?php
+\$hostname = gethostname();
+\$date = date('Y-m-d H:i:s');
+\$php_version = phpversion();
+\$username = get_current_user();
+
+echo \"Hello World!<br>\";
+echo \"Saya adalah: \$username<br>\";
+echo \"Saat ini berada di: \$hostname<br>\";
+echo \"Versi PHP yang saya gunakan: \$php_version<br>\";
+echo \"Tanggal saat ini: \$date<br>\";
+?>
+" > /var/www/praktikum23/index.php
+
+# Nginx sites-available configuration
+echo '
+server {
+
+ 	listen 80;
+
+ 	root /var/www/praktikum23;
+
+ 	index index.php index.html index.htm;
+ 	server_name _;
+
+ 	location / {
+ 			try_files $uri $uri/ /index.php?$query_string;
+ 	}
+
+ 	# pass PHP scripts to FastCGI server
+ 	location ~ \.php$ {
+ 	include snippets/fastcgi-php.conf;
+ 	fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+ 	}
+
+    location ~ /\.ht {
+ 			deny all;
+ 	}
+
+ 	error_log /var/log/nginx/praktikum23_error.log;
+ 	access_log /var/log/nginx/praktikum23_access.log;
+}
+' > /etc/nginx/sites-available/praktikum23
+
+ln -s /etc/nginx/sites-available/praktikum23 /etc/nginx/sites-enabled/praktikum23
+
+service nginx restart
+service php7.2-fpm stop
+service php7.2-fpm start
+```
+
+Untuk melakukan pengujian install lynx pada node client
+```sh
+apt-get lynx
+```
 ### Hasil
+Lalu untuk pengujiannya, buka **arjuna.e21.com** dengan perintah berikut pada node client, yaitu **NakulaClient** atau **SadewaClient**:
+```
+lynx 10.47.1.5
+lynx 10.47.1.4
+lynx 10.47.1.6
+lynx arjuna.e21.com
+```
 
 ## Soal 10
 > Kemudian gunakan algoritma **Round Robin** untuk Load Balancer pada **Arjuna**. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. 
@@ -290,7 +652,77 @@ Contoh:
 >   - Abimanyu:8002
 >   - Wisanggeni:8003
 ### *Script*
+
+Perbarui file ```/etc/nginx/sites-available/praktikum23-loadbalancer```, dengan menggunakan script berikut:
+```sh
+# Nginx sites-available config untuk worker loadbalancer
+echo ' # Default menggunakan Round Robin
+ upstream myweb  {
+    server 10.47.1.5:8001; #IP Prabukusuma
+ 	server 10.47.1.4:8002; #IP Abimanyu
+    server 10.47.1.6:8003; #IP Wisanggeni
+ }
+
+ server {
+ 	listen 80;
+ 	server_name arjuna.e21.com www.arjuna.e21.com;
+
+ 	location / {
+ 	proxy_pass http://myweb;
+ 	}
+ }' > /etc/nginx/sites-available/praktikum23-loadbalancer
+
+ln -s /etc/nginx/sites-available/praktikum23-loadbalancer /etc/nginx/sites-enabled/praktikum23-loadbalancer
+
+service nginx restart
+```
+
+Perbarui juga file konfigurasi *sites-available* pada masing masing worker (**AbimanyuWerbServer**, **PrabukusumaWebServer**, **WisanggerniWebServer**), agar me-listen ke port yang telah ditentukan. gunakan script berikut:
+
+```sh
+# Nginx sites-available configuration
+echo '
+ server {
+
+    # [x] mengikuti digit terakhir pada port yang telah ditentukan
+ 	listen 800[x];
+
+ 	root /var/www/praktikum23;
+
+ 	index index.php index.html index.htm;
+ 	server_name _;
+
+ 	location / {
+ 			try_files $uri $uri/ /index.php?$query_string;
+ 	}
+
+ 	# pass PHP scripts to FastCGI server
+ 	location ~ \.php$ {
+ 	include snippets/fastcgi-php.conf;
+ 	fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+ 	}
+
+    location ~ /\.ht {
+ 			deny all;
+ 	}
+
+ 	error_log /var/log/nginx/praktikum23_error.log;
+ 	access_log /var/log/nginx/praktikum23_access.log;
+ }
+' > /etc/nginx/sites-available/praktikum23
+
+service nginx restart
+service php7.2-fpm stop
+service php7.2-fpm start
+```
 ### Hasil
+Lalu untuk pengujiannya, buka **arjuna.e21.com** dengan perintah berikut pada node client, yaitu **NakulaClient** atau **SadewaClient**:
+```
+lynx 10.47.1.5:8001
+lynx 10.47.1.4:8002
+lynx 10.47.1.6:8003
+lynx arjuna.e21.com
+```
 
 ## Soal 11
 > Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server **www.abimanyu.yyy.com**. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy

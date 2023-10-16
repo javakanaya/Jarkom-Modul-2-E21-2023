@@ -149,9 +149,9 @@ $TTL  604800
 @           IN  NS      arjuna.e21.com.
 @           IN  A       10.47.2.2   ; IP Arjuna
 www         IN  CNAME   arjuna.e21.com.' > /etc/bind/arjuna/arjuna.e21.com
-
 ```
-Kemudian untuk melakukan pengujian, jalankan script berikut, agar node client terhubung ke **YudhistiraDNSMaster**
+
+Kemudian untuk melakukan pengujian, jalankan script berikut pada node client, agar node client terhubung ke **YudhistiraDNSMaster**
 ```sh
 echo '
 nameserver 10.47.2.4        # IP Yudhistira 
@@ -171,7 +171,50 @@ ping www.arjuna.e21.com -c 5
 ## Soal 3
 > Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke **abimanyu.yyy.com** dan alias **www.abimanyu.yyy.com**.
 ### *Script*
+Melanjutkan pada soal nomor 2, maka kita perlu menambahkan konfigurasi untuk domain **abimanyu.e21.com** dengan script sebagai berikut.
+
+```sh
+# konfigurasi etc/bind/named.conf.local
+echo 'zone "arjuna.e21.com" {
+    type master;
+    notify yes;
+    file "/etc/bind/arjuna/arjuna.e21.com";
+};
+
+zone "abimanyu.e21.com" {
+    type master;
+    notify yes;
+    file "/etc/bind/abimanyu/abimanyu.e21.com";
+};' > /etc/bind/named.conf.local
+
+mkdir /etc/bind/abimanyu
+
+# konfigurasi domain abimanyu.e21.com
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL  604800
+@       IN    SOA       abimanyu.e21.com. root.abimanyu.e21.com. (
+                        2023101001      ; Serial
+                            604800      ; Refresh
+                             86400      ; Retry
+                           2419200      ; Expire
+                            604800 )    ; Negative Cache TTL
+
+;
+@               IN  NS      abimanyu.e21.com.
+@               IN  A       10.47.1.4                   ; IP Abimanyu
+www             IN  CNAME   abimanyu.e21.com.
+@               IN  AAAA    ::1' > /etc/bind/abimanyu/abimanyu.e21.com
+```
 ### Hasil
+Lalu untuk pengujiannya, sama seperti sebelumnya, jalankan perintah berikut pada node client, yaitu **NakulaClient** atau **SadewaClient**
+```
+ping abimanyu.e21.com -c 5
+ping www.abimanyu.e21.com -c 5
+```
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/8214b0f5-ab0a-4fe4-829c-2b715a9ab96a">
 
 ## Soal 4
 > Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain **parikesit.abimanyu.yyy.com** yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.

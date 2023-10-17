@@ -9,7 +9,7 @@ Laporan Resmi Praktikum Jaringan Komputer Modul 2
 
 ## Topologi
 
-<img width="1057" alt="Topologi" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/c7b68ddc-95c8-4208-aa75-1edc92eae57f">
+<img width="1057" alt="Topologi" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/a08d9785-04d2-414c-9e9e-bf14297e2537">
 
 ## Network Configuration
 
@@ -140,8 +140,9 @@ ping google.com -c 5
 
 ### Hasil
 
-<img width="1580" alt="Screenshot 2023-10-14 at 10 47 02" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/d99a67bf-af8a-4154-94c2-93160b095994">
-<img width="1580" alt="Screenshot 2023-10-14 at 10 47 07" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/dd5b1649-cafa-454c-a931-f4c524c12688">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/8bc7a0d0-8ef2-4d1c-8cec-075421065de5">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/6eec7e1f-3fe6-4fd8-afe9-db3adfd5bab2">
+
 
 ## Soal 2
 
@@ -202,9 +203,8 @@ ping arjuna.e21.com -c 5
 ping www.arjuna.e21.com -c 5
 ```
 
-<img width="1580" alt="Screenshot 2023-10-14 at 11 36 53" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/4f775e24-514d-4462-a2fa-cf4d7c7137e8">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/220e51e6-8670-41f4-82f1-1e6f531c855e">
 
-<img width="1580" alt="Screenshot 2023-10-14 at 11 39 42" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/9f1c6a67-eb06-4ecd-af60-19bf4f6acdf3">
 
 ## Soal 3
 
@@ -261,7 +261,8 @@ ping abimanyu.e21.com -c 5
 ping www.abimanyu.e21.com -c 5
 ```
 
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/8214b0f5-ab0a-4fe4-829c-2b715a9ab96a">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/cb6936c2-f669-4975-8e90-fd049727a2aa">
+
 
 ## Soal 4
 
@@ -304,7 +305,8 @@ ping parikesit.abimanyu.e21.com -c 5
 ping www.parikesit.abimanyu.e21.com -c 5
 ```
 
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/cb59cb1e-a2f0-4f41-86cb-8cb66e0734c9">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/2dc3c283-a421-4b89-9649-8ed1f9a97e26">
+
 
 Terlihat bahwa IP-nya juga mengarah ke IP Abimanyu, yaitu `10.47.1.4`
 
@@ -368,7 +370,8 @@ Lalu untuk melakukan pengujian pada node client, jalankan perintah berikut. (`10
 host -t PTR 10.47.1.4
 ```
 
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/b556bf50-9091-4788-8703-728857941ca8">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/bf9fd765-0a74-4941-a481-7ec1e2da749f">
+
 
 ## Soal 6
 
@@ -456,7 +459,8 @@ ping abimanyu.e21.com -c 5
 ping arjuna.e21.com -c 5
 ```
 
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/fab521ce-116e-4518-a5c6-c35fc66975bc">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/a9e818cf-7e83-4bdf-bb7b-cc649df8bdc8">
+
 
 ## Soal 7
 
@@ -576,7 +580,7 @@ ping baratayuda.abimanyu.e21.com -c 5
 ping www.baratayuda.abimanyu.e21.com -c 5
 ```
 
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/234050ad-59a0-4fb6-bee7-1ab37d4a835c">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/a1624095-b4d4-4771-ac69-d7863310eef4">
 
 ## Soal 8
 
@@ -617,7 +621,8 @@ ping rjp.baratayuda.abimanyu.e21.com -c 5
 ping www.rjp.baratayuda.abimanyu.e21.com -c 5
 ```
 
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/606e5b55-9506-4827-b034-5e5ecfdf8b16">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/fa13d34a-2c35-405a-8a5f-22c8a16376ec">
+
 
 ## Soal 9
 
@@ -747,9 +752,10 @@ lynx 10.47.1.6
 lynx arjuna.e21.com
 ```
 
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/d9f238ce-c621-48db-ac5f-fbb70b34f989">
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/121f1015-959e-49bd-bbf0-d6dc2d885738">
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/4132e13e-01eb-41c1-985d-232603d20a16">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/b6ce704c-03b9-4b80-a1ef-90771b053471">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/221a5caf-ab6f-4270-a3ee-139802a95e0c">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/5e6d8ee1-e3c5-4b1b-8780-eefaf434eee9">
+
 
 ## Soal 10
 
@@ -835,9 +841,9 @@ lynx arjuna.e21.com
 ```
 
 ketika berulang-kali mengakses arjuna.e21.com, akan berjalan di web server yang berbeda-beda.
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/58b01b96-ceca-45bb-893f-551c7ce3f2f1">
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/d1b57999-a3f9-41cb-b4b3-e0015c55b6ec">
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/d1c8d8fb-e2d1-4eea-a14b-6aa8aa0f3042">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/b6ce704c-03b9-4b80-a1ef-90771b053471">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/221a5caf-ab6f-4270-a3ee-139802a95e0c">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/5e6d8ee1-e3c5-4b1b-8780-eefaf434eee9">
 
 ## Soal 11
 

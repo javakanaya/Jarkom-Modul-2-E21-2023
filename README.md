@@ -754,7 +754,8 @@ lynx arjuna.e21.com
 
 <img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/b6ce704c-03b9-4b80-a1ef-90771b053471">
 <img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/221a5caf-ab6f-4270-a3ee-139802a95e0c">
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/5e6d8ee1-e3c5-4b1b-8780-eefaf434eee9">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/66c8923f-4759-4efa-8890-7c02276f3cad">
+
 
 
 ## Soal 10
@@ -843,7 +844,8 @@ lynx arjuna.e21.com
 ketika berulang-kali mengakses arjuna.e21.com, akan berjalan di web server yang berbeda-beda.
 <img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/b6ce704c-03b9-4b80-a1ef-90771b053471">
 <img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/221a5caf-ab6f-4270-a3ee-139802a95e0c">
-<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/5e6d8ee1-e3c5-4b1b-8780-eefaf434eee9">
+<img width="1580" alt="image" src="https://github.com/javakanaya/Jarkom-Modul-2-E21-2023/assets/87474722/a35b62f8-a4db-4e2f-b342-8a9bd21ba847">
+
 
 ## Soal 11
 
